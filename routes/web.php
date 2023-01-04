@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\BuyerController;
+use App\Http\Controllers\InvoceController;
+use App\Http\Controllers\InvoceDetailController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
