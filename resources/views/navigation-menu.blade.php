@@ -18,6 +18,9 @@
                     <x-jet-nav-link href="{{ route('product.index') }}" :active="request()->routeIs('product.*')">
                         {{ __('Products') }}
                     </x-jet-nav-link>
+                    <x-jet-nav-link href="{{ route('buyer.index') }}" :active="request()->routeIs('buyer.*')">
+                        {{ __('Buyers') }}
+                    </x-jet-nav-link>
                 </div>
             </div>
 
