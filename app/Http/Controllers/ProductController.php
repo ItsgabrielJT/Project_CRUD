@@ -6,6 +6,7 @@ use App\Http\Requests\ProductStoreRequest;
 use App\Models\Product;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -15,10 +16,16 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::all();
-        return view('products.index', compact('products')); 
+        $texto = trim($request->get('texto'));
+        $products = DB::table('products')
+            ->select('id', 'nombre', 'precio', 'image', 'created_at')
+            ->where('nombre', 'LIKE', '%'.$texto.'%')
+            ->orWhere('precio', 'LIKE', '%'.$texto.'%')
+            ->orderBy('precio', 'asc')
+            ->paginate(10);
+        return view('products.index', compact('products', 'texto')); 
     }
 
     /**
@@ -29,6 +36,7 @@ class ProductController extends Controller
     public function create()
     {
         $product = new Product();
+        
         return view('products.create', compact('product'));
     }
 
@@ -55,7 +63,7 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show(Request $request)
     {
         //
     }

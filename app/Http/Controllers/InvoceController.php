@@ -9,6 +9,7 @@ use App\Models\Invoce;
 use App\Models\InvoceDetail;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class InvoceController extends Controller
@@ -18,10 +19,15 @@ class InvoceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $invoces = Invoce::with('buyer')->paginate(3);
-        return view('invoces.index', compact('invoces'));
+        $texto = trim($request->get('texto'));        
+        $invoces = Invoce::with('buyer')
+        ->where('buyer_id', 'LIKE', '%'.$texto.'%')
+        ->orWhere('estatus', 'LIKE', '%'.$texto.'%')
+        ->orderBy('id', 'asc')
+            ->paginate(3);
+        return view('invoces.index', compact('invoces', 'texto'));
     }
 
     /**

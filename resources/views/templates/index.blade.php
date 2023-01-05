@@ -9,12 +9,17 @@
 
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @yield('button-add')
-        </div>        
+
+            <link rel="stylesheet" href="https://unpkg.com/flowbite@1.4.4/dist/flowbite.min.css" />
+
+            <!-- This is an example component -->
+            @yield('search')
+        </div>
 
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-            @if (session('status'))            
-                <x-session/>
+            @if (session('status'))
+                <x-session />
             @endif
 
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">

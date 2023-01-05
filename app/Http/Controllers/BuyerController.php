@@ -6,6 +6,7 @@ use App\Http\Requests\BuyerStoreRequest;
 use App\Models\Buyer;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BuyerController extends Controller
 {
@@ -14,10 +15,16 @@ class BuyerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $buyers = Buyer::paginate(10); // mostrara solo dos elemtnos de la tabla
-        return view('buyers.index', compact('buyers'));
+        $texto = trim($request->get('texto'));
+        $buyers = DB::table('buyers')
+            ->select('id', 'ci', 'nombre', 'email', 'created_at')
+            ->where('nombre', 'LIKE', '%'.$texto.'%')
+            ->orWhere('ci', 'LIKE', '%'.$texto.'%')
+            ->orderBy('nombre', 'asc')
+            ->paginate(10);
+        return view('buyers.index', compact('buyers', 'texto')); 
     }
 
     /**
