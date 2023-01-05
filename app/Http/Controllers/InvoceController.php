@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\InvoiceStoreRequest;
+use App\Mail\InvoceMail;
 use App\Models\Buyer;
 use App\Models\Invoce;
+use App\Models\InvoceDetail;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class InvoceController extends Controller
 {
@@ -97,6 +100,25 @@ class InvoceController extends Controller
         } catch(Exception $e) {
             $result = ['status'=>'Success', 'color' => 'red','message'=>'Invoice cannot be delete'];
         } 
+        return redirect()->route('invoce.index')->with($result);
+    }
+
+    public function completeSend(Request $request, Invoce $invoce) {
+        $details = InvoceDetail::with('product')
+            ->where('invoce_id', $invoce->id)
+            ->get();
+
+        try {
+            Mail::to($invoce->buyer->email)
+                ->queue(new InvoceMail($invoce, $details));
+            $result = ['status' => 'success', 'color' => 'green', 'message' => 'Mail sent successfully'];
+        } catch (\Exception $e) {
+            $result = ['status' => 'success', 'color' => 'green', 'message' => $e->getMessage()];
+        }
+
+        $invoce->estatus = 'complete';
+        $invoce->save();
+
         return redirect()->route('invoce.index')->with($result);
     }
 }
